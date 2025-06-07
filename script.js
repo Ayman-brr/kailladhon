@@ -112,22 +112,43 @@ function uploadVideo() {
     input.accept = 'video/*';
     
     input.onchange = e => {
-        videoFile = e.target.files[0];
-        if (videoFile) {
+        const file = e.target.files[0];
+        if (file) {
+            videoFile = file;
+            
             // Clear existing overlays
             overlays.forEach(overlay => overlay.remove());
             overlays = [];
             currentOverlay = null;
             
-            // Load new video
-            video.src = URL.createObjectURL(videoFile);
+            // Create object URL and set as video source
+            const videoURL = URL.createObjectURL(file);
+            video.src = videoURL;
+            video.load(); // Important to trigger loading
+            
+            // Reset output and UI
             outputContainer.hidden = true;
             exportBtn.disabled = true;
-            status.textContent = `Loaded: ${videoFile.name}`;
+            status.textContent = `Loaded: ${file.name}`;
+            progressBar.style.width = '0%';
+            
+            // When video metadata is loaded, initialize a sample overlay
+            video.onloadedmetadata = () => {
+                setTimeout(() => {
+                    textContent.value = "Your Text Here";
+                    addTextOverlay();
+                }, 500);
+            };
         }
     };
     
+    // Trigger the file input click
     input.click();
+    
+    // Clean up the input element after selection
+    input.onclick = (e) => {
+        e.target.value = null; // Reset to allow re-selecting same file
+    };
 }
 
 function processVideo() {
