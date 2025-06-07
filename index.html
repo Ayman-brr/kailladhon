@@ -10,107 +10,79 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-video"></i> WebAssembly Video Editor</h1>
-            <p class="subtitle">Add text overlays to your videos with WebAssembly-powered processing. Drag and position text anywhere on your video.</p>
+            <h1><i class="fas fa-video"></i> WASM Video Editor</h1>
+            <p>Add text overlays to videos with WebAssembly processing</p>
         </header>
-        
-        <div class="editor-container">
-            <div class="video-section">
-                <div class="preview-container">
-                    <video id="video-preview" controls>
+
+        <div class="editor">
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <video id="video" controls>
                         <source src="https://assets.codepen.io/3364143/sample.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
                     </video>
-                    <!-- Text overlays will be added here dynamically -->
                 </div>
-                
                 <div class="controls">
-                    <button class="btn" id="upload-btn">
-                        <i class="fas fa-upload"></i> Upload Video
+                    <button id="upload" class="btn">
+                        <i class="fas fa-upload"></i> Upload
                     </button>
-                    <button class="btn btn-process" id="process-btn">
-                        <i class="fas fa-cogs"></i> Process Video
+                    <button id="process" class="btn primary">
+                        <i class="fas fa-cogs"></i> Process
                     </button>
-                    <button class="btn btn-export" id="export-btn">
+                    <button id="export" class="btn success" disabled>
                         <i class="fas fa-download"></i> Export
                     </button>
                 </div>
             </div>
-            
-            <div class="text-controls">
-                <h2 class="panel-title"><i class="fas fa-text-height"></i> Text Overlay Controls</h2>
-                
+
+            <div class="controls-panel">
+                <h2><i class="fas fa-text-height"></i> Text Overlay</h2>
                 <div class="form-group">
-                    <label for="text-content">Text Content</label>
-                    <textarea id="text-content" placeholder="Enter your text here...">Hello, WebAssembly!</textarea>
+                    <label>Text Content</label>
+                    <textarea id="text-content" placeholder="Enter text..."></textarea>
                 </div>
-                
-                <div class="form-group">
-                    <label for="font-size">Font Size</label>
-                    <select id="font-size">
-                        <option value="20">Small</option>
-                        <option value="30" selected>Medium</option>
-                        <option value="40">Large</option>
-                        <option value="50">X-Large</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="text-color">Text Color</label>
-                    <div class="color-picker">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Font Size</label>
+                        <select id="font-size">
+                            <option value="16">Small</option>
+                            <option value="24" selected>Medium</option>
+                            <option value="32">Large</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
                         <input type="color" id="text-color" value="#ffffff">
-                        <div class="color-preview" id="color-preview"></div>
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="bg-color">Background Color</label>
-                    <div class="color-picker">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Background</label>
                         <input type="color" id="bg-color" value="#000000">
-                        <div class="color-preview" id="bg-preview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Opacity</label>
+                        <input type="range" id="opacity" min="0" max="100" value="50">
+                        <span id="opacity-value">50%</span>
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="text-opacity">Background Opacity</label>
-                    <input type="range" id="text-opacity" min="0" max="100" value="50">
-                    <span id="opacity-value">50%</span>
-                </div>
-                
-                <button class="btn" id="add-text-btn">
-                    <i class="fas fa-plus"></i> Add Text Overlay
+                <button id="add-text" class="btn">
+                    <i class="fas fa-plus"></i> Add Text
                 </button>
-                
-                <div class="instructions">
-                    <p><strong>Instructions:</strong></p>
-                    <ul>
-                        <li>Add text using the controls on the right</li>
-                        <li>Drag text overlays to position them</li>
-                        <li>Click on text to edit or delete</li>
-                        <li>Upload your own video or use the sample</li>
-                        <li>Process video to apply text overlays</li>
-                    </ul>
-                </div>
             </div>
         </div>
-        
+
         <div class="status">
-            <h2 class="status-title"><i class="fas fa-tasks"></i> Processing Status</h2>
-            <p id="status-text">Ready to process video. Add text overlays and click "Process Video".</p>
             <div class="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
+                <div id="progress-bar" class="progress-bar"></div>
             </div>
-            <div class="output-container" id="output-container">
-                <h3>Processed Video</h3>
+            <p id="status">Ready to process</p>
+            <div id="output" class="output-container" hidden>
                 <video id="output-video" controls></video>
-                <button class="btn btn-export" id="download-btn" style="margin-top: 15px;">
-                    <i class="fas fa-download"></i> Download Video
-                </button>
             </div>
         </div>
-        
+
         <footer>
-            <p>WebAssembly Video Editor | Using ffmpeg.wasm for video processing</p>
+            <p>WebAssembly Video Editor using ffmpeg.wasm</p>
         </footer>
     </div>
 
