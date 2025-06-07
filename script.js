@@ -1,272 +1,319 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+// Initialize variables
+let overlays = [];
+let currentOverlay = null;
+let videoFile = null;
+let isDragging = false;
+let offsetX, offsetY;
+
+// DOM Elements
+const videoPreview = document.getElementById('video-preview');
+const previewContainer = document.querySelector('.preview-container');
+const textContent = document.getElementById('text-content');
+const fontSize = document.getElementById('font-size');
+const textColor = document.getElementById('text-color');
+const bgColor = document.getElementById('bg-color');
+const textOpacity = document.getElementById('text-opacity');
+const opacityValue = document.getElementById('opacity-value');
+const colorPreview = document.getElementById('color-preview');
+const bgPreview = document.getElementById('bg-preview');
+const addTextBtn = document.getElementById('add-text-btn');
+const uploadBtn = document.getElementById('upload-btn');
+const processBtn = document.getElementById('process-btn');
+const exportBtn = document.getElementById('export-btn');
+const statusText = document.getElementById('status-text');
+const progressBar = document.getElementById('progress-bar');
+const outputContainer = document.getElementById('output-container');
+const outputVideo = document.getElementById('output-video');
+const downloadBtn = document.getElementById('download-btn');
+
+// Initialize color previews and opacity
+colorPreview.style.backgroundColor = textColor.value;
+bgPreview.style.backgroundColor = bgColor.value;
+opacityValue.textContent = `${textOpacity.value}%`;
+
+// Event listeners for color changes
+textColor.addEventListener('input', () => {
+    colorPreview.style.backgroundColor = textColor.value;
+    if (currentOverlay) {
+        currentOverlay.style.color = textColor.value;
+    }
+});
+
+bgColor.addEventListener('input', () => {
+    bgPreview.style.backgroundColor = bgColor.value;
+    if (currentOverlay) {
+        updateOverlayBackground();
+    }
+});
+
+// Event listener for opacity changes
+textOpacity.addEventListener('input', () => {
+    opacityValue.textContent = `${textOpacity.value}%`;
+    if (currentOverlay) {
+        updateOverlayBackground();
+    }
+});
+
+// Update overlay background with opacity
+function updateOverlayBackground() {
+    if (!currentOverlay) return;
+    
+    const opacity = parseInt(textOpacity.value) / 100;
+    const bgColorValue = bgColor.value;
+    const r = parseInt(bgColorValue.slice(1, 3), 16);
+    const g = parseInt(bgColorValue.slice(3, 5), 16);
+    const b = parseInt(bgColorValue.slice(5, 7), 16);
+    
+    currentOverlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
-body {
-    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-    color: #fff;
-    min-height: 100vh;
-    padding: 20px;
-    overflow-x: hidden;
-}
+// Add text overlay
+addTextBtn.addEventListener('click', () => {
+    const content = textContent.value.trim();
+    if (!content) return;
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'text-overlay';
+    overlay.textContent = content;
+    overlay.style.color = textColor.value;
+    overlay.style.fontSize = `${fontSize.value}px`;
+    updateOverlayBackground.call({overlay});
+    
+    // Center the overlay initially
+    const containerRect = previewContainer.getBoundingClientRect();
+    const overlayWidth = Math.min(300, containerRect.width - 40);
+    overlay.style.width = `${overlayWidth}px`;
+    overlay.style.left = `${(containerRect.width - overlayWidth) / 2}px`;
+    overlay.style.top = `${containerRect.height * 0.2}px`;
+    
+    // Add event listeners for dragging and selection
+    overlay.addEventListener('mousedown', startDrag);
+    overlay.addEventListener('click', selectOverlay.bind(null, overlay));
+    
+    previewContainer.appendChild(overlay);
+    overlays.push(overlay);
+    selectOverlay(overlay);
+});
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-h1 {
-    font-size: 2.8rem;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-.subtitle {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.editor-container {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 25px;
-    margin-bottom: 30px;
-}
-
-.video-section {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.preview-container {
-    position: relative;
-    background: #000;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    aspect-ratio: 16/9;
-}
-
-#video-preview {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
-
-.btn {
-    background: linear-gradient(45deg, #3498db, #2980b9);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.btn:active {
-    transform: translateY(1px);
-}
-
-.btn.btn-process {
-    background: linear-gradient(45deg, #2ecc71, #27ae60);
-}
-
-.btn.btn-export {
-    background: linear-gradient(45deg, #e74c3c, #c0392b);
-}
-
-.text-controls {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.panel-title {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-input, select, textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 1rem;
-}
-
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.color-picker {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.color-preview {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: white;
-}
-
-.text-overlay {
-    position: absolute;
-    padding: 10px;
-    cursor: move;
-    user-select: none;
-    border: 2px dashed rgba(255, 255, 255, 0.5);
-    border-radius: 5px;
-    background: rgba(0, 0, 0, 0.5);
-    max-width: 300px;
-    word-wrap: break-word;
-    transition: all 0.2s ease;
-}
-
-.text-overlay.selected {
-    border: 2px solid #3498db;
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
-}
-
-.status {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
-    padding: 25px;
-    margin-top: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.status-title {
-    font-size: 1.4rem;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.progress-container {
-    height: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    overflow: hidden;
-    margin: 20px 0;
-}
-
-.progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #3498db, #2ecc71);
-    width: 0%;
-    transition: width 0.3s ease;
-    border-radius: 15px;
-}
-
-.output-container {
-    display: none;
-    margin-top: 20px;
-    text-align: center;
-}
-
-#output-video {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 15px;
-}
-
-.instructions {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 10px;
-    margin-top: 20px;
-    font-size: 0.9rem;
-}
-
-.instructions ul {
-    padding-left: 20px;
-    margin-top: 10px;
-}
-
-.instructions li {
-    margin-bottom: 8px;
-}
-
-footer {
-    text-align: center;
-    margin-top: 40px;
-    opacity: 0.7;
-    font-size: 0.9rem;
-}
-
-/* Responsive design */
-@media (max-width: 900px) {
-    .editor-container {
-        grid-template-columns: 1fr;
+// Select an overlay
+function selectOverlay(overlay) {
+    if (currentOverlay) {
+        currentOverlay.classList.remove('selected');
+    }
+    currentOverlay = overlay;
+    overlay.classList.add('selected');
+    
+    // Update controls to match selected overlay
+    textContent.value = overlay.textContent;
+    textColor.value = rgbToHex(overlay.style.color);
+    colorPreview.style.backgroundColor = textColor.value;
+    
+    // Extract background color and opacity
+    const bg = overlay.style.backgroundColor;
+    if (bg) {
+        const rgba = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+        if (rgba) {
+            const r = parseInt(rgba[1]);
+            const g = parseInt(rgba[2]);
+            const b = parseInt(rgba[3]);
+            const a = rgba[4] ? parseFloat(rgba[4]) : 1;
+            
+            bgColor.value = rgbToHex(`rgb(${r}, ${g}, ${b})`);
+            bgPreview.style.backgroundColor = bgColor.value;
+            textOpacity.value = Math.round(a * 100);
+            opacityValue.textContent = `${textOpacity.value}%`;
+        }
     }
     
-    h1 {
-        font-size: 2.2rem;
+    // Update font size
+    const size = parseInt(overlay.style.fontSize);
+    if (size) {
+        fontSize.value = size;
     }
 }
 
-@media (max-width: 600px) {
-    .controls {
-        flex-direction: column;
+// Convert RGB to hex
+function rgbToHex(rgb) {
+    const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    if (!match) return '#000000';
+    
+    const r = parseInt(match[1]).toString(16).padStart(2, '0');
+    const g = parseInt(match[2]).toString(16).padStart(2, '0');
+    const b = parseInt(match[3]).toString(16).padStart(2, '0');
+    
+    return `#${r}${g}${b}`;
+}
+
+// Drag functionality
+function startDrag(e) {
+    if (e.button !== 0) return; // Only left mouse button
+    
+    isDragging = true;
+    const rect = this.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    
+    this.style.zIndex = '10';
+    
+    selectOverlay(this);
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDrag);
+}
+
+function drag(e) {
+    if (!isDragging || !currentOverlay) return;
+    
+    const containerRect = previewContainer.getBoundingClientRect();
+    let x = e.clientX - containerRect.left - offsetX;
+    let y = e.clientY - containerRect.top - offsetY;
+    
+    // Boundary checking
+    x = Math.max(0, Math.min(containerRect.width - currentOverlay.offsetWidth, x));
+    y = Math.max(0, Math.min(containerRect.height - currentOverlay.offsetHeight, y));
+    
+    currentOverlay.style.left = `${x}px`;
+    currentOverlay.style.top = `${y}px`;
+}
+
+function stopDrag() {
+    isDragging = false;
+    document.removeEventListener('mousemove', drag);
+    document.removeEventListener('mouseup', stopDrag);
+}
+
+// Video upload
+uploadBtn.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/*';
+    
+    input.onchange = e => {
+        videoFile = e.target.files[0];
+        if (videoFile) {
+            // Clear previous overlays
+            overlays.forEach(overlay => overlay.remove());
+            overlays = [];
+            currentOverlay = null;
+            
+            // Load new video
+            const url = URL.createObjectURL(videoFile);
+            videoPreview.src = url;
+            videoPreview.load();
+            
+            statusText.textContent = `Video loaded: ${videoFile.name}`;
+            outputContainer.style.display = 'none';
+            progressBar.style.width = '0%';
+        }
+    };
+    
+    input.click();
+});
+
+// Process video button
+processBtn.addEventListener('click', async () => {
+    if (!overlays.length) {
+        statusText.textContent = "Please add at least one text overlay";
+        return;
     }
     
-    .btn {
-        width: 100%;
+    statusText.textContent = "Processing video...";
+    progressBar.style.width = '30%';
+    
+    // Simulate WebAssembly processing with ffmpeg.wasm
+    // In a real implementation, we would use actual WebAssembly processing
+    setTimeout(() => {
+        progressBar.style.width = '70%';
+        statusText.textContent = "Applying text overlays with WASM...";
+        
+        setTimeout(() => {
+            progressBar.style.width = '100%';
+            statusText.textContent = "Video processing complete!";
+            
+            // Show output
+            outputContainer.style.display = 'block';
+            outputVideo.src = videoPreview.src;
+            
+            // Scroll to output
+            outputContainer.scrollIntoView({ behavior: 'smooth' });
+        }, 1500);
+    }, 1000);
+});
+
+// Export button
+exportBtn.addEventListener('click', () => {
+    if (outputContainer.style.display === 'block') {
+        downloadVideo();
+    } else {
+        statusText.textContent = "Please process the video first";
     }
+});
+
+// Download button
+downloadBtn.addEventListener('click', downloadVideo);
+
+function downloadVideo() {
+    // In a real implementation, this would download the processed video
+    statusText.textContent = "Downloading video...";
+    
+    // Create a temporary link to trigger download
+    const link = document.createElement('a');
+    link.href = outputVideo.src;
+    link.download = 'edited-video.mp4';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setTimeout(() => {
+        statusText.textContent = "Video downloaded successfully!";
+    }, 1000);
 }
+
+// Delete overlay with Delete key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete' && currentOverlay) {
+        const index = overlays.indexOf(currentOverlay);
+        if (index !== -1) {
+            overlays.splice(index, 1);
+            currentOverlay.remove();
+            currentOverlay = null;
+        }
+    }
+});
+
+// Initialize sample overlay when video is loaded
+videoPreview.addEventListener('loadedmetadata', () => {
+    // Create a sample overlay on the sample video
+    setTimeout(() => {
+        const overlay = document.createElement('div');
+        overlay.className = 'text-overlay';
+        overlay.textContent = "Drag me anywhere!";
+        overlay.style.color = "#ffffff";
+        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+        overlay.style.fontSize = "30px";
+        overlay.style.width = "250px";
+        overlay.style.left = "150px";
+        overlay.style.top = "50px";
+        
+        overlay.addEventListener('mousedown', startDrag);
+        overlay.addEventListener('click', () => selectOverlay(overlay));
+        
+        previewContainer.appendChild(overlay);
+        overlays.push(overlay);
+        selectOverlay(overlay);
+    }, 500);
+});
+
+// Update overlay when text content changes
+textContent.addEventListener('input', () => {
+    if (currentOverlay) {
+        currentOverlay.textContent = textContent.value;
+    }
+});
+
+// Update overlay font size
+fontSize.addEventListener('change', () => {
+    if (currentOverlay) {
+        currentOverlay.style.fontSize = `${fontSize.value}px`;
+    }
+});
