@@ -1,138 +1,189 @@
-// Initialize variables
-let overlays = [];
-let currentOverlay = null;
-let videoFile = null;
-let isDragging = false;
-let offsetX, offsetY;
-
 // DOM Elements
-const videoPreview = document.getElementById('video-preview');
-const previewContainer = document.querySelector('.preview-container');
+const video = document.getElementById('video');
+const videoWrapper = document.querySelector('.video-wrapper');
 const textContent = document.getElementById('text-content');
 const fontSize = document.getElementById('font-size');
 const textColor = document.getElementById('text-color');
 const bgColor = document.getElementById('bg-color');
-const textOpacity = document.getElementById('text-opacity');
+const opacity = document.getElementById('opacity');
 const opacityValue = document.getElementById('opacity-value');
-const colorPreview = document.getElementById('color-preview');
-const bgPreview = document.getElementById('bg-preview');
-const addTextBtn = document.getElementById('add-text-btn');
-const uploadBtn = document.getElementById('upload-btn');
-const processBtn = document.getElementById('process-btn');
-const exportBtn = document.getElementById('export-btn');
-const statusText = document.getElementById('status-text');
+const addTextBtn = document.getElementById('add-text');
+const uploadBtn = document.getElementById('upload');
+const processBtn = document.getElementById('process');
+const exportBtn = document.getElementById('export');
+const status = document.getElementById('status');
 const progressBar = document.getElementById('progress-bar');
-const outputContainer = document.getElementById('output-container');
+const outputContainer = document.getElementById('output');
 const outputVideo = document.getElementById('output-video');
-const downloadBtn = document.getElementById('download-btn');
 
-// Initialize color previews and opacity
-colorPreview.style.backgroundColor = textColor.value;
-bgPreview.style.backgroundColor = bgColor.value;
-opacityValue.textContent = `${textOpacity.value}%`;
+// State
+let overlays = [];
+let currentOverlay = null;
+let videoFile = null;
 
-// Event listeners for color changes
-textColor.addEventListener('input', () => {
-    colorPreview.style.backgroundColor = textColor.value;
-    if (currentOverlay) {
-        currentOverlay.style.color = textColor.value;
-    }
-});
+// Initialize
+opacityValue.textContent = `${opacity.value}%`;
 
-bgColor.addEventListener('input', () => {
-    bgPreview.style.backgroundColor = bgColor.value;
-    if (currentOverlay) {
-        updateOverlayBackground();
-    }
-});
+// Event Listeners
+addTextBtn.addEventListener('click', addTextOverlay);
+uploadBtn.addEventListener('click', uploadVideo);
+processBtn.addEventListener('click', processVideo);
+exportBtn.addEventListener('click', exportVideo);
+opacity.addEventListener('input', updateOpacityValue);
 
-// Event listener for opacity changes
-textOpacity.addEventListener('input', () => {
-    opacityValue.textContent = `${textOpacity.value}%`;
-    if (currentOverlay) {
-        updateOverlayBackground();
-    }
-});
+// Functions
+function addTextOverlay() {
+    const text = textContent.value.trim();
+    if (!text) return;
 
-// Update overlay background with opacity
-function updateOverlayBackground() {
-    if (!currentOverlay) return;
-    
-    const opacity = parseInt(textOpacity.value) / 100;
-    const bgColorValue = bgColor.value;
-    const r = parseInt(bgColorValue.slice(1, 3), 16);
-    const g = parseInt(bgColorValue.slice(3, 5), 16);
-    const b = parseInt(bgColorValue.slice(5, 7), 16);
-    
-    currentOverlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
-}
-
-// Add text overlay
-addTextBtn.addEventListener('click', () => {
-    const content = textContent.value.trim();
-    if (!content) return;
-    
     const overlay = document.createElement('div');
     overlay.className = 'text-overlay';
-    overlay.textContent = content;
-    overlay.style.color = textColor.value;
+    overlay.textContent = text;
     overlay.style.fontSize = `${fontSize.value}px`;
-    updateOverlayBackground.call({overlay});
+    overlay.style.color = textColor.value;
+    overlay.style.backgroundColor = `rgba(${hexToRgb(bgColor.value)}, ${opacity.value / 100})`;
     
-    // Center the overlay initially
-    const containerRect = previewContainer.getBoundingClientRect();
-    const overlayWidth = Math.min(300, containerRect.width - 40);
-    overlay.style.width = `${overlayWidth}px`;
-    overlay.style.left = `${(containerRect.width - overlayWidth) / 2}px`;
-    overlay.style.top = `${containerRect.height * 0.2}px`;
+    // Center overlay initially
+    const rect = videoWrapper.getBoundingClientRect();
+    overlay.style.left = `${rect.width / 2 - 100}px`;
+    overlay.style.top = `${rect.height / 2 - 50}px`;
     
-    // Add event listeners for dragging and selection
+    // Add drag functionality
     overlay.addEventListener('mousedown', startDrag);
-    overlay.addEventListener('click', selectOverlay.bind(null, overlay));
+    overlay.addEventListener('click', () => selectOverlay(overlay));
     
-    previewContainer.appendChild(overlay);
+    videoWrapper.appendChild(overlay);
     overlays.push(overlay);
     selectOverlay(overlay);
-});
+}
 
-// Select an overlay
 function selectOverlay(overlay) {
     if (currentOverlay) {
-        currentOverlay.classList.remove('selected');
+        currentOverlay.style.border = 'none';
     }
     currentOverlay = overlay;
-    overlay.classList.add('selected');
+    overlay.style.border = '2px dashed #2a9d8f';
     
-    // Update controls to match selected overlay
+    // Update controls
     textContent.value = overlay.textContent;
     textColor.value = rgbToHex(overlay.style.color);
-    colorPreview.style.backgroundColor = textColor.value;
+    fontSize.value = parseInt(overlay.style.fontSize);
     
-    // Extract background color and opacity
-    const bg = overlay.style.backgroundColor;
+    const bg = overlay.style.backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/);
     if (bg) {
-        const rgba = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-        if (rgba) {
-            const r = parseInt(rgba[1]);
-            const g = parseInt(rgba[2]);
-            const b = parseInt(rgba[3]);
-            const a = rgba[4] ? parseFloat(rgba[4]) : 1;
-            
-            bgColor.value = rgbToHex(`rgb(${r}, ${g}, ${b})`);
-            bgPreview.style.backgroundColor = bgColor.value;
-            textOpacity.value = Math.round(a * 100);
-            opacityValue.textContent = `${textOpacity.value}%`;
-        }
-    }
-    
-    // Update font size
-    const size = parseInt(overlay.style.fontSize);
-    if (size) {
-        fontSize.value = size;
+        bgColor.value = rgbToHex(`rgb(${bg[1]},${bg[2]},${bg[3]}`);
+        opacity.value = Math.round(bg[4] * 100);
+        opacityValue.textContent = `${opacity.value}%`;
     }
 }
 
-// Convert RGB to hex
+function startDrag(e) {
+    e.preventDefault();
+    const overlay = e.target;
+    const rect = overlay.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    function move(e) {
+        const videoRect = videoWrapper.getBoundingClientRect();
+        let x = e.clientX - videoRect.left - offsetX;
+        let y = e.clientY - videoRect.top - offsetY;
+        
+        // Boundary check
+        x = Math.max(0, Math.min(videoRect.width - rect.width, x));
+        y = Math.max(0, Math.min(videoRect.height - rect.height, y));
+        
+        overlay.style.left = `${x}px`;
+        overlay.style.top = `${y}px`;
+    }
+    
+    function stop() {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', stop);
+    }
+    
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', stop);
+}
+
+function uploadVideo() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/*';
+    
+    input.onchange = e => {
+        videoFile = e.target.files[0];
+        if (videoFile) {
+            // Clear existing overlays
+            overlays.forEach(overlay => overlay.remove());
+            overlays = [];
+            currentOverlay = null;
+            
+            // Load new video
+            video.src = URL.createObjectURL(videoFile);
+            outputContainer.hidden = true;
+            exportBtn.disabled = true;
+            status.textContent = `Loaded: ${videoFile.name}`;
+        }
+    };
+    
+    input.click();
+}
+
+function processVideo() {
+    if (!overlays.length) {
+        status.textContent = "Please add at least one text overlay";
+        return;
+    }
+    
+    status.textContent = "Processing video...";
+    progressBar.style.width = '0%';
+    exportBtn.disabled = true;
+    
+    // Simulate processing (in real app, use ffmpeg.wasm)
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = `${progress}%`;
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                status.textContent = "Processing complete!";
+                outputVideo.src = video.src;
+                outputContainer.hidden = false;
+                exportBtn.disabled = false;
+            }, 500);
+        }
+    }, 100);
+}
+
+function exportVideo() {
+    const link = document.createElement('a');
+    link.href = outputVideo.src;
+    link.download = 'edited-video.mp4';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    status.textContent = "Video downloaded!";
+}
+
+function updateOpacityValue() {
+    opacityValue.textContent = `${opacity.value}%`;
+    if (currentOverlay) {
+        const rgb = hexToRgb(bgColor.value);
+        currentOverlay.style.backgroundColor = `rgba(${rgb}, ${opacity.value / 100})`;
+    }
+}
+
+// Helper functions
+function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `${r}, ${g}, ${b}`;
+}
+
 function rgbToHex(rgb) {
     const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
     if (!match) return '#000000';
@@ -144,176 +195,10 @@ function rgbToHex(rgb) {
     return `#${r}${g}${b}`;
 }
 
-// Drag functionality
-function startDrag(e) {
-    if (e.button !== 0) return; // Only left mouse button
-    
-    isDragging = true;
-    const rect = this.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-    
-    this.style.zIndex = '10';
-    
-    selectOverlay(this);
-    
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', stopDrag);
-}
-
-function drag(e) {
-    if (!isDragging || !currentOverlay) return;
-    
-    const containerRect = previewContainer.getBoundingClientRect();
-    let x = e.clientX - containerRect.left - offsetX;
-    let y = e.clientY - containerRect.top - offsetY;
-    
-    // Boundary checking
-    x = Math.max(0, Math.min(containerRect.width - currentOverlay.offsetWidth, x));
-    y = Math.max(0, Math.min(containerRect.height - currentOverlay.offsetHeight, y));
-    
-    currentOverlay.style.left = `${x}px`;
-    currentOverlay.style.top = `${y}px`;
-}
-
-function stopDrag() {
-    isDragging = false;
-    document.removeEventListener('mousemove', drag);
-    document.removeEventListener('mouseup', stopDrag);
-}
-
-// Video upload
-uploadBtn.addEventListener('click', () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'video/*';
-    
-    input.onchange = e => {
-        videoFile = e.target.files[0];
-        if (videoFile) {
-            // Clear previous overlays
-            overlays.forEach(overlay => overlay.remove());
-            overlays = [];
-            currentOverlay = null;
-            
-            // Load new video
-            const url = URL.createObjectURL(videoFile);
-            videoPreview.src = url;
-            videoPreview.load();
-            
-            statusText.textContent = `Video loaded: ${videoFile.name}`;
-            outputContainer.style.display = 'none';
-            progressBar.style.width = '0%';
-        }
-    };
-    
-    input.click();
-});
-
-// Process video button
-processBtn.addEventListener('click', async () => {
-    if (!overlays.length) {
-        statusText.textContent = "Please add at least one text overlay";
-        return;
-    }
-    
-    statusText.textContent = "Processing video...";
-    progressBar.style.width = '30%';
-    
-    // Simulate WebAssembly processing with ffmpeg.wasm
-    // In a real implementation, we would use actual WebAssembly processing
+// Initialize with sample overlay when video loads
+video.addEventListener('loadedmetadata', () => {
     setTimeout(() => {
-        progressBar.style.width = '70%';
-        statusText.textContent = "Applying text overlays with WASM...";
-        
-        setTimeout(() => {
-            progressBar.style.width = '100%';
-            statusText.textContent = "Video processing complete!";
-            
-            // Show output
-            outputContainer.style.display = 'block';
-            outputVideo.src = videoPreview.src;
-            
-            // Scroll to output
-            outputContainer.scrollIntoView({ behavior: 'smooth' });
-        }, 1500);
-    }, 1000);
-});
-
-// Export button
-exportBtn.addEventListener('click', () => {
-    if (outputContainer.style.display === 'block') {
-        downloadVideo();
-    } else {
-        statusText.textContent = "Please process the video first";
-    }
-});
-
-// Download button
-downloadBtn.addEventListener('click', downloadVideo);
-
-function downloadVideo() {
-    // In a real implementation, this would download the processed video
-    statusText.textContent = "Downloading video...";
-    
-    // Create a temporary link to trigger download
-    const link = document.createElement('a');
-    link.href = outputVideo.src;
-    link.download = 'edited-video.mp4';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    setTimeout(() => {
-        statusText.textContent = "Video downloaded successfully!";
-    }, 1000);
-}
-
-// Delete overlay with Delete key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Delete' && currentOverlay) {
-        const index = overlays.indexOf(currentOverlay);
-        if (index !== -1) {
-            overlays.splice(index, 1);
-            currentOverlay.remove();
-            currentOverlay = null;
-        }
-    }
-});
-
-// Initialize sample overlay when video is loaded
-videoPreview.addEventListener('loadedmetadata', () => {
-    // Create a sample overlay on the sample video
-    setTimeout(() => {
-        const overlay = document.createElement('div');
-        overlay.className = 'text-overlay';
-        overlay.textContent = "Drag me anywhere!";
-        overlay.style.color = "#ffffff";
-        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-        overlay.style.fontSize = "30px";
-        overlay.style.width = "250px";
-        overlay.style.left = "150px";
-        overlay.style.top = "50px";
-        
-        overlay.addEventListener('mousedown', startDrag);
-        overlay.addEventListener('click', () => selectOverlay(overlay));
-        
-        previewContainer.appendChild(overlay);
-        overlays.push(overlay);
-        selectOverlay(overlay);
+        textContent.value = "Sample Text";
+        addTextOverlay();
     }, 500);
-});
-
-// Update overlay when text content changes
-textContent.addEventListener('input', () => {
-    if (currentOverlay) {
-        currentOverlay.textContent = textContent.value;
-    }
-});
-
-// Update overlay font size
-fontSize.addEventListener('change', () => {
-    if (currentOverlay) {
-        currentOverlay.style.fontSize = `${fontSize.value}px`;
-    }
 });
