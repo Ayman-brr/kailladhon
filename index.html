@@ -3,527 +3,668 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Young Black nd Rich</title>
+    <title>Tuff</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
         
         body {
-            background: #1a1a2e;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
             color: #fff;
             min-height: 100vh;
-            padding: 2rem;
+            padding: 20px;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 20px;
         }
         
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
         
-        .editor {
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .editor-container {
             display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+            margin-bottom: 30px;
         }
         
-        @media (max-width: 768px) {
-            .editor {
-                grid-template-columns: 1fr;
-            }
+        .video-section {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
         }
         
-        .video-container {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 8px;
-        }
-        
-        .video-wrapper {
+        .preview-container {
             position: relative;
             background: #000;
-            border-radius: 4px;
+            border-radius: 10px;
             overflow: hidden;
-            margin-bottom: 1rem;
-            aspect-ratio: 16/9;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
-        video {
-            width: 100%;
-            height: 100%;
+        #video-preview {
+            max-width: 100%;
+            max-height: 100%;
             display: block;
         }
         
         .controls {
             display: flex;
-            gap: 0.5rem;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
         
         .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            background: #4a4a6a;
+            background: linear-gradient(45deg, #3498db, #2980b9);
             color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         
         .btn:hover {
-            background: #5a5a7a;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
         
-        .btn.primary {
-            background: #2a9d8f;
+        .btn:active {
+            transform: translateY(1px);
         }
         
-        .btn.primary:hover {
-            background: #3aad9f;
+        .btn.btn-process {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
         }
         
-        .btn.success {
-            background: #e63946;
+        .btn.btn-export {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
         }
         
-        .btn.success:hover {
-            background: #f64956;
+        .text-controls {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         
-        .controls-panel {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 8px;
-        }
-        
-        .controls-panel h2 {
-            margin-bottom: 1rem;
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 10px;
         }
         
         .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
+            margin-bottom: 20px;
         }
         
         label {
             display: block;
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
         }
         
         input, select, textarea {
             width: 100%;
-            padding: 0.5rem;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
             color: white;
+            font-size: 1rem;
         }
         
-        textarea {
-            min-height: 80px;
-            resize: vertical;
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px #3498db;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #555;
         }
         
         .text-overlay {
             position: absolute;
-            padding: 0.5rem;
+            padding: 10px;
             cursor: move;
             user-select: none;
-            border-radius: 4px;
+            border-radius: 5px;
             max-width: 300px;
-            word-break: break-word;
+            word-wrap: break-word;
+            transition: all 0.2s ease;
+            transform-origin: center;
+            text-align: center;
+        }
+        
+        .text-overlay.selected {
+            box-shadow: 0 0 0 2px #3498db, 0 0 15px rgba(52, 152, 219, 0.7);
+            z-index: 10;
         }
         
         .status {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .progress-container {
-            height: 8px;
+            height: 30px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin-bottom: 1rem;
+            border-radius: 15px;
             overflow: hidden;
+            margin: 20px 0;
         }
         
         .progress-bar {
             height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
             width: 0%;
-            background: #2a9d8f;
-            transition: width 0.3s;
+            transition: width 0.3s ease;
+            border-radius: 15px;
         }
         
         .output-container {
-            margin-top: 1rem;
+            display: none;
+            margin-top: 20px;
+            text-align: center;
         }
         
-        .output-container video {
-            border-radius: 4px;
+        #output-video {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 15px;
+            max-width: 600px;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
         }
         
         footer {
             text-align: center;
-            margin-top: 2rem;
+            margin-top: 40px;
             opacity: 0.7;
+            font-size: 0.9rem;
         }
         
-        /* Debugging styles */
-        .debug-info {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 1000;
+        .property-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .rotation-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rotation-control input {
+            flex: 1;
+        }
+        
+        .stroke-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 900px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .property-grid, .stroke-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-video"></i> WASM Video Editor</h1>
-            <p>Add text overlays to videos with WebAssembly processing</p>
+            <h1><i class="fas fa-video"></i> Advanced WASM Video Editor</h1>
+            <p class="subtitle">Add text overlays with rotation, stroke effects, and export your videos</p>
         </header>
-
-        <div class="editor">
-            <div class="video-container">
-                <div class="video-wrapper">
-                    <video id="video" controls>
+        
+        <div class="editor-container">
+            <div class="video-section">
+                <div class="preview-container" id="preview-container">
+                    <video id="video-preview" controls>
                         <source src="https://assets.codepen.io/3364143/sample.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
                     </video>
                 </div>
+                
                 <div class="controls">
-                    <button id="upload" class="btn">
-                        <i class="fas fa-upload"></i> Upload
+                    <button class="btn" id="upload-btn">
+                        <i class="fas fa-upload"></i> Upload Video
                     </button>
-                    <button id="process" class="btn primary">
-                        <i class="fas fa-cogs"></i> Process
+                    <button class="btn btn-process" id="process-btn">
+                        <i class="fas fa-cogs"></i> Process Video
                     </button>
-                    <button id="export" class="btn success" disabled>
-                        <i class="fas fa-download"></i> Export
+                    <button class="btn btn-export" id="export-btn" disabled>
+                        <i class="fas fa-download"></i> Export Video
                     </button>
                 </div>
             </div>
-
-            <div class="controls-panel">
-                <h2><i class="fas fa-text-height"></i> Text Overlay</h2>
+            
+            <div class="text-controls">
+                <h2 class="panel-title"><i class="fas fa-text-height"></i> Text Overlay Controls</h2>
+                
                 <div class="form-group">
-                    <label>Text Content</label>
-                    <textarea id="text-content" placeholder="Enter text..."></textarea>
+                    <label for="text-content">Text Content</label>
+                    <textarea id="text-content" placeholder="Enter your text here...">Hello, WebAssembly!</textarea>
                 </div>
-                <div class="form-row">
+                
+                <div class="property-grid">
                     <div class="form-group">
-                        <label>Font Size</label>
+                        <label for="font-size">Font Size</label>
                         <select id="font-size">
-                            <option value="16">Small</option>
-                            <option value="24" selected>Medium</option>
-                            <option value="32">Large</option>
+                            <option value="20">Small</option>
+                            <option value="30" selected>Medium</option>
+                            <option value="40">Large</option>
+                            <option value="50">X-Large</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
-                        <label>Color</label>
+                        <label for="rotation">Rotation (degrees)</label>
+                        <div class="rotation-control">
+                            <input type="range" id="rotation" min="0" max="360" value="0">
+                            <span id="rotation-value">0°</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="text-color">Text Color</label>
+                    <div class="color-picker">
                         <input type="color" id="text-color" value="#ffffff">
+                        <div class="color-preview" id="color-preview"></div>
                     </div>
                 </div>
-                <div class="form-row">
+                
+                <div class="stroke-controls">
                     <div class="form-group">
-                        <label>Background</label>
+                        <label for="stroke-color">Stroke Color</label>
+                        <div class="color-picker">
+                            <input type="color" id="stroke-color" value="#000000">
+                            <div class="color-preview" id="stroke-preview"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stroke-width">Stroke Width</label>
+                        <input type="range" id="stroke-width" min="0" max="10" value="0">
+                        <span id="stroke-value">0px</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bg-color">Background Color</label>
+                    <div class="color-picker">
                         <input type="color" id="bg-color" value="#000000">
-                    </div>
-                    <div class="form-group">
-                        <label>Opacity</label>
-                        <input type="range" id="opacity" min="0" max="100" value="50">
-                        <span id="opacity-value">50%</span>
+                        <div class="color-preview" id="bg-preview"></div>
                     </div>
                 </div>
-                <button id="add-text" class="btn">
-                    <i class="fas fa-plus"></i> Add Text
+                
+                <div class="form-group">
+                    <label for="text-opacity">Background Opacity</label>
+                    <input type="range" id="text-opacity" min="0" max="100" value="50">
+                    <span id="opacity-value">50%</span>
+                </div>
+                
+                <button class="btn" id="add-text-btn">
+                    <i class="fas fa-plus"></i> Add Text Overlay
+                </button>
+                
+                <div class="instructions">
+                    <p><strong>Instructions:</strong></p>
+                    <ul>
+                        <li>Add text using the controls on the right</li>
+                        <li>Drag text overlays to position them</li>
+                        <li>Click on text to select and edit its properties</li>
+                        <li>Upload your own video or use the sample</li>
+                        <li>Process video to apply text overlays</li>
+                        <li>Export your final video</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status">
+            <h2 class="status-title"><i class="fas fa-tasks"></i> Processing Status</h2>
+            <p id="status-text">Ready to process video. Add text overlays and click "Process Video".</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="output-container" id="output-container">
+                <h3>Processed Video</h3>
+                <video id="output-video" controls></video>
+                <button class="btn btn-export" id="download-btn" style="margin-top: 15px;">
+                    <i class="fas fa-download"></i> Download Video
                 </button>
             </div>
         </div>
-
-        <div class="status">
-            <div class="progress-container">
-                <div id="progress-bar" class="progress-bar"></div>
-            </div>
-            <p id="status">Ready to process</p>
-            <div id="output" class="output-container" hidden>
-                <video id="output-video" controls></video>
-            </div>
-        </div>
-
+        
         <footer>
-            <p>WebAssembly Video Editor using ffmpeg.wasm</p>
+            <p>Advanced WebAssembly Video Editor | Using ffmpeg.wasm for video processing</p>
         </footer>
     </div>
 
-    <div class="debug-info" id="debug-info"></div>
-
     <script>
+        // Initialize variables
+        let overlays = [];
+        let currentOverlay = null;
+        let videoFile = null;
+        let isDragging = false;
+        let offsetX, offsetY;
+        
         // DOM Elements
-        const video = document.getElementById('video');
-        const videoWrapper = document.querySelector('.video-wrapper');
+        const videoPreview = document.getElementById('video-preview');
+        const previewContainer = document.getElementById('preview-container');
         const textContent = document.getElementById('text-content');
         const fontSize = document.getElementById('font-size');
         const textColor = document.getElementById('text-color');
         const bgColor = document.getElementById('bg-color');
-        const opacity = document.getElementById('opacity');
+        const textOpacity = document.getElementById('text-opacity');
         const opacityValue = document.getElementById('opacity-value');
-        const addTextBtn = document.getElementById('add-text');
-        const uploadBtn = document.getElementById('upload');
-        const processBtn = document.getElementById('process');
-        const exportBtn = document.getElementById('export');
-        const status = document.getElementById('status');
+        const rotation = document.getElementById('rotation');
+        const rotationValue = document.getElementById('rotation-value');
+        const strokeColor = document.getElementById('stroke-color');
+        const strokeWidth = document.getElementById('stroke-width');
+        const strokeValue = document.getElementById('stroke-value');
+        const colorPreview = document.getElementById('color-preview');
+        const bgPreview = document.getElementById('bg-preview');
+        const strokePreview = document.getElementById('stroke-preview');
+        const addTextBtn = document.getElementById('add-text-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+        const processBtn = document.getElementById('process-btn');
+        const exportBtn = document.getElementById('export-btn');
+        const statusText = document.getElementById('status-text');
         const progressBar = document.getElementById('progress-bar');
-        const outputContainer = document.getElementById('output');
+        const outputContainer = document.getElementById('output-container');
         const outputVideo = document.getElementById('output-video');
-        const debugInfo = document.getElementById('debug-info');
-
-        // State
-        let overlays = [];
-        let currentOverlay = null;
-        let videoFile = null;
-
-        // Initialize
-        opacityValue.textContent = `${opacity.value}%`;
-
-        // Event Listeners
-        addTextBtn.addEventListener('click', addTextOverlay);
-        uploadBtn.addEventListener('click', uploadVideo);
-        processBtn.addEventListener('click', processVideo);
-        exportBtn.addEventListener('click', exportVideo);
-        opacity.addEventListener('input', updateOpacityValue);
-
-        // Functions
-        function addTextOverlay() {
-            const text = textContent.value.trim();
-            if (!text) return;
-
+        const downloadBtn = document.getElementById('download-btn');
+        
+        // Initialize color previews and values
+        colorPreview.style.backgroundColor = textColor.value;
+        bgPreview.style.backgroundColor = bgColor.value;
+        strokePreview.style.backgroundColor = strokeColor.value;
+        opacityValue.textContent = `${textOpacity.value}%`;
+        rotationValue.textContent = `${rotation.value}°`;
+        strokeValue.textContent = `${strokeWidth.value}px`;
+        
+        // Event listeners for changes
+        textColor.addEventListener('input', () => {
+            colorPreview.style.backgroundColor = textColor.value;
+            if (currentOverlay) {
+                currentOverlay.style.color = textColor.value;
+            }
+        });
+        
+        bgColor.addEventListener('input', () => {
+            bgPreview.style.backgroundColor = bgColor.value;
+            if (currentOverlay) {
+                updateOverlayBackground();
+            }
+        });
+        
+        strokeColor.addEventListener('input', () => {
+            strokePreview.style.backgroundColor = strokeColor.value;
+            if (currentOverlay) {
+                currentOverlay.style.textShadow = createStrokeStyle();
+            }
+        });
+        
+        textOpacity.addEventListener('input', () => {
+            opacityValue.textContent = `${textOpacity.value}%`;
+            if (currentOverlay) {
+                updateOverlayBackground();
+            }
+        });
+        
+        rotation.addEventListener('input', () => {
+            rotationValue.textContent = `${rotation.value}°`;
+            if (currentOverlay) {
+                currentOverlay.style.transform = `rotate(${rotation.value}deg)`;
+            }
+        });
+        
+        strokeWidth.addEventListener('input', () => {
+            strokeValue.textContent = `${strokeWidth.value}px`;
+            if (currentOverlay) {
+                currentOverlay.style.textShadow = createStrokeStyle();
+            }
+        });
+        
+        // Create stroke style for text
+        function createStrokeStyle() {
+            const width = strokeWidth.value;
+            const color = strokeColor.value;
+            if (width <= 0) return 'none';
+            
+            let shadow = '';
+            for (let i = -width; i <= width; i++) {
+                for (let j = -width; j <= width; j++) {
+                    if (i !== 0 || j !== 0) {
+                        shadow += `${i}px ${j}px 0 ${color},`;
+                    }
+                }
+            }
+            return shadow.slice(0, -1); // Remove last comma
+        }
+        
+        // Update overlay background with opacity
+        function updateOverlayBackground() {
+            if (!currentOverlay) return;
+            
+            const opacity = parseInt(textOpacity.value) / 100;
+            const bgColorValue = bgColor.value;
+            const r = parseInt(bgColorValue.slice(1, 3), 16);
+            const g = parseInt(bgColorValue.slice(3, 5), 16);
+            const b = parseInt(bgColorValue.slice(5, 7), 16);
+            
+            currentOverlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        }
+        
+        // Add text overlay
+        addTextBtn.addEventListener('click', () => {
+            const content = textContent.value.trim();
+            if (!content) return;
+            
             const overlay = document.createElement('div');
             overlay.className = 'text-overlay';
-            overlay.textContent = text;
-            overlay.style.fontSize = `${fontSize.value}px`;
+            overlay.textContent = content;
             overlay.style.color = textColor.value;
-            overlay.style.backgroundColor = `rgba(${hexToRgb(bgColor.value)}, ${opacity.value / 100})`;
+            overlay.style.fontSize = `${fontSize.value}px`;
+            overlay.style.transform = `rotate(${rotation.value}deg)`;
+            overlay.style.textShadow = createStrokeStyle();
             
-            // Center overlay initially
-            const rect = videoWrapper.getBoundingClientRect();
-            overlay.style.left = `${rect.width / 2 - 100}px`;
-            overlay.style.top = `${rect.height / 2 - 50}px`;
+            // Set background with opacity
+            const opacity = parseInt(textOpacity.value) / 100;
+            const bgColorValue = bgColor.value;
+            const r = parseInt(bgColorValue.slice(1, 3), 16);
+            const g = parseInt(bgColorValue.slice(3, 5), 16);
+            const b = parseInt(bgColorValue.slice(5, 7), 16);
+            overlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
             
-            // Add drag functionality
+            // Center the overlay initially
+            const containerRect = previewContainer.getBoundingClientRect();
+            const overlayWidth = Math.min(300, containerRect.width - 40);
+            overlay.style.width = `${overlayWidth}px`;
+            overlay.style.left = `${(containerRect.width - overlayWidth) / 2}px`;
+            overlay.style.top = `${containerRect.height * 0.2}px`;
+            
+            // Add event listeners for dragging and selection
             overlay.addEventListener('mousedown', startDrag);
             overlay.addEventListener('click', () => selectOverlay(overlay));
             
-            videoWrapper.appendChild(overlay);
+            previewContainer.appendChild(overlay);
             overlays.push(overlay);
             selectOverlay(overlay);
-        }
-
+        });
+        
+        // Select an overlay
         function selectOverlay(overlay) {
             if (currentOverlay) {
-                currentOverlay.style.border = 'none';
+                currentOverlay.classList.remove('selected');
             }
             currentOverlay = overlay;
-            overlay.style.border = '2px dashed #2a9d8f';
+            overlay.classList.add('selected');
             
-            // Update controls
+            // Update controls to match selected overlay
             textContent.value = overlay.textContent;
             textColor.value = rgbToHex(overlay.style.color);
-            fontSize.value = parseInt(overlay.style.fontSize);
+            colorPreview.style.backgroundColor = textColor.value;
             
-            const bg = overlay.style.backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/);
+            // Extract background color and opacity
+            const bg = overlay.style.backgroundColor;
             if (bg) {
-                bgColor.value = rgbToHex(`rgb(${bg[1]},${bg[2]},${bg[3]}`);
-                opacity.value = Math.round(bg[4] * 100);
-                opacityValue.textContent = `${opacity.value}%`;
-            }
-        }
-
-        function startDrag(e) {
-            e.preventDefault();
-            const overlay = e.target;
-            const rect = overlay.getBoundingClientRect();
-            const offsetX = e.clientX - rect.left;
-            const offsetY = e.clientY - rect.top;
-            
-            function move(e) {
-                const videoRect = videoWrapper.getBoundingClientRect();
-                let x = e.clientX - videoRect.left - offsetX;
-                let y = e.clientY - videoRect.top - offsetY;
-                
-                // Boundary check
-                x = Math.max(0, Math.min(videoRect.width - rect.width, x));
-                y = Math.max(0, Math.min(videoRect.height - rect.height, y));
-                
-                overlay.style.left = `${x}px`;
-                overlay.style.top = `${y}px`;
-            }
-            
-            function stop() {
-                document.removeEventListener('mousemove', move);
-                document.removeEventListener('mouseup', stop);
-            }
-            
-            document.addEventListener('mousemove', move);
-            document.addEventListener('mouseup', stop);
-        }
-
-        function uploadVideo() {
-            // Create file input
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'video/*';
-            input.style.display = 'none';
-            
-            // Append to body (required for some browsers)
-            document.body.appendChild(input);
-            
-            // Trigger click
-            input.click();
-            
-            // Handle file selection
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    // Check if it's a video file
-                    if (!file.type.startsWith('video/')) {
-                        status.textContent = 'Please select a video file';
-                        // Clean up
-                        document.body.removeChild(input);
-                        return;
-                    }
+                const rgba = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                if (rgba) {
+                    const r = parseInt(rgba[1]);
+                    const g = parseInt(rgba[2]);
+                    const b = parseInt(rgba[3]);
+                    const a = rgba[4] ? parseFloat(rgba[4]) : 1;
                     
-                    videoFile = file;
-                    
-                    // Clear existing overlays
-                    overlays.forEach(overlay => overlay.remove());
-                    overlays = [];
-                    currentOverlay = null;
-                    
-                    // Create object URL and set as video source
-                    const videoURL = URL.createObjectURL(file);
-                    video.src = videoURL;
-                    video.load(); // Important to trigger loading
-                    
-                    // Reset output and UI
-                    outputContainer.hidden = true;
-                    exportBtn.disabled = true;
-                    status.textContent = `Loaded: ${file.name}`;
-                    progressBar.style.width = '0%';
-                    
-                    // When video metadata is loaded, initialize a sample overlay
-                    video.onloadedmetadata = function() {
-                        setTimeout(() => {
-                            textContent.value = "Your Text Here";
-                            addTextOverlay();
-                        }, 500);
-                    };
-                    
-                    // Handle video loading errors
-                    video.onerror = function() {
-                        status.textContent = "Error loading video";
-                        URL.revokeObjectURL(videoURL);
-                    };
+                    bgColor.value = rgbToHex(`rgb(${r},${g},${b})`);
+                    bgPreview.style.backgroundColor = bgColor.value;
+                    textOpacity.value = Math.round(a * 100);
+                    opacityValue.textContent = `${textOpacity.value}%`;
                 }
-                
-                // Clean up the input
-                document.body.removeChild(input);
-            };
-            
-            // Also handle when the user cancels
-            input.oncancel = function() {
-                document.body.removeChild(input);
-            };
-        }
-
-        function processVideo() {
-            if (!overlays.length) {
-                status.textContent = "Please add at least one text overlay";
-                return;
             }
             
-            status.textContent = "Processing video...";
-            progressBar.style.width = '0%';
-            exportBtn.disabled = true;
+            // Update font size
+            const size = parseInt(overlay.style.fontSize);
+            if (size) {
+                fontSize.value = size;
+            }
             
-            // Simulate processing (in real app, use ffmpeg.wasm)
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 5;
-                progressBar.style.width = `${progress}%`;
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        status.textContent = "Processing complete!";
-                        outputVideo.src = video.src;
-                        outputContainer.hidden = false;
-                        exportBtn.disabled = false;
-                    }, 500);
+            // Update rotation
+            const transform = overlay.style.transform;
+            if (transform) {
+                const match = transform.match(/rotate\((\d+)deg\)/);
+                if (match) {
+                    rotation.value = match[1];
+                    rotationValue.textContent = `${match[1]}°`;
                 }
-            }, 100);
-        }
-
-        function exportVideo() {
-            const link = document.createElement('a');
-            link.href = outputVideo.src;
-            link.download = 'edited-video.mp4';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            status.textContent = "Video downloaded!";
-        }
-
-        function updateOpacityValue() {
-            opacityValue.textContent = `${opacity.value}%`;
-            if (currentOverlay) {
-                const rgb = hexToRgb(bgColor.value);
-                currentOverlay.style.backgroundColor = `rgba(${rgb}, ${opacity.value / 100})`;
+            }
+            
+            // Update stroke
+            const textShadow = overlay.style.textShadow;
+            if (textShadow && textShadow !== 'none') {
+                const match = textShadow.match(/(-?\d+)px (-?\d+)px 0 (#[0-9a-fA-F]{6})/);
+                if (match) {
+                    const width = Math.abs(parseInt(match[1]));
+                    strokeWidth.value = width;
+                    strokeValue.textContent = `${width}px`;
+                    strokeColor.value = match[3];
+                    strokePreview.style.backgroundColor = match[3];
+                }
+            } else {
+                strokeWidth.value = 0;
+                strokeValue.textContent = "0px";
             }
         }
-
-        // Helper functions
-        function hexToRgb(hex) {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return `${r}, ${g}, ${b}`;
-        }
-
+        
+        // Convert RGB to hex
         function rgbToHex(rgb) {
             const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
             if (!match) return '#000000';
@@ -534,12 +675,1047 @@
             
             return `#${r}${g}${b}`;
         }
-
-        // Initialize with sample overlay when video loads
-        video.addEventListener('loadedmetadata', () => {
+        
+        // Drag functionality
+        function startDrag(e) {
+            if (e.button !== 0) return; // Only left mouse button
+            
+            isDragging = true;
+            const rect = this.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            
+            selectOverlay(this);
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+        
+        function drag(e) {
+            if (!isDragging || !currentOverlay) return;
+            
+            const containerRect = previewContainer.getBoundingClientRect();
+            let x = e.clientX - containerRect.left - offsetX;
+            let y = e.clientY - containerRect.top - offsetY;
+            
+            // Boundary checking
+            x = Math.max(0, Math.min(containerRect.width - currentOverlay.offsetWidth, x));
+            y = Math.max(0, Math.min(containerRect.height - currentOverlay.offsetHeight, y));
+            
+            currentOverlay.style.left = `${x}px`;
+            currentOverlay.style.top = `${y}px`;
+        }
+        
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+        
+        // Video upload
+        uploadBtn.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'video/*';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    videoFile = file;
+                    
+                    // Clear previous overlays
+                    overlays.forEach(overlay => overlay.remove());
+                    overlays = [];
+                    currentOverlay = null;
+                    
+                    // Load new video
+                    const url = URL.createObjectURL(file);
+                    videoPreview.src = url;
+                    videoPreview.load();
+                    
+                    // Adjust container aspect ratio
+                    videoPreview.onloadedmetadata = function() {
+                        const aspectRatio = videoPreview.videoWidth / videoPreview.videoHeight;
+                        previewContainer.style.aspectRatio = aspectRatio;
+                    };
+                    
+                    statusText.textContent = `Video loaded: ${file.name}`;
+                    outputContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                    exportBtn.disabled = true;
+                }
+            };
+            
+            input.click();
+        });
+        
+        // Process video button
+        processBtn.addEventListener('click', async () => {
+            if (!overlays.length) {
+                statusText.textContent = "Please add at least one text overlay";
+                return;
+            }
+            
+            statusText.textContent = "Processing video...";
+            progressBar.style.width = '30%';
+            exportBtn.disabled = true;
+            
+            // Simulate WebAssembly processing
             setTimeout(() => {
-                textContent.value = "Sample Text";
-                addTextOverlay();
+                progressBar.style.width = '70%';
+                statusText.textContent = "Applying text overlays with WASM...";
+                
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                    statusText.textContent = "Video processing complete!";
+                    
+                    // Show output
+                    outputContainer.style.display = 'block';
+                    outputVideo.src = videoPreview.src;
+                    exportBtn.disabled = false;
+                    
+                    // Scroll to output
+                    outputContainer.scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            }, 1000);
+        });
+        
+        // Export button
+        exportBtn.addEventListener('click', () => {
+            if (outputContainer.style.display === 'block') {
+                downloadVideo();
+            } else {
+                statusText.textContent = "Please process the video first";
+            }
+        });
+        
+        // Download button
+        downloadBtn.addEventListener('click', downloadVideo);
+        
+        function downloadVideo() {
+            statusText.textContent = "Downloading video...";
+            
+            // Create a temporary link to trigger download
+            const link = document.createElement('a');
+            link.href = outputVideo.src;
+            link.download = 'edited-video.mp4';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                statusText.textContent = "Video downloaded successfully!";
+            }, 1000);
+        }
+        
+        // Delete overlay with Delete key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' && currentOverlay) {
+                const index = overlays.indexOf(currentOverlay);
+                if (index !== -1) {
+                    overlays.splice(index, 1);
+                    currentOverlay.remove();
+                    currentOverlay = null;
+                }
+            }
+        });
+        
+        // Update overlay when text content changes
+        textContent.addEventListener('input', () => {
+            if (currentOverlay) {
+                currentOverlay.textContent = textContent.value;
+            }
+        });
+        
+        // Update overlay font size
+        fontSize.addEventListener('change', () => {
+            if (currentOverlay) {
+                currentOverlay.style.fontSize = `${fontSize.value}px`;
+            }
+        });
+        
+        // Initialize with sample overlay when video is loaded
+        videoPreview.addEventListener('loadedmetadata', () => {
+            // Create a sample overlay on the sample video
+            setTimeout(() => {
+                const overlay = document.createElement('div');
+                overlay.className = 'text-overlay';
+                overlay.textContent = "Drag me anywhere!";
+                overlay.style.color = "#ffffff";
+                overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+                overlay.style.fontSize = "30px";
+                overlay.style.width = "250px";
+                overlay.style.left = "150px";
+                overlay.style.top = "50px";
+                overlay.style.textShadow = "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000";
+                
+                overlay.addEventListener('mousedown', startDrag);
+                overlay.addEventListener('click', () => selectOverlay(overlay));
+                
+                previewContainer.appendChild(overlay);
+                overlays.push(overlay);
+                selectOverlay(overlay);
+            }, 500);
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced WASM Video Editor</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .video-section {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .preview-container {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #video-preview {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn.btn-process {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+        
+        .btn.btn-export {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        
+        .text-controls {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px #3498db;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #555;
+        }
+        
+        .text-overlay {
+            position: absolute;
+            padding: 10px;
+            cursor: move;
+            user-select: none;
+            border-radius: 5px;
+            max-width: 300px;
+            word-wrap: break-word;
+            transition: all 0.2s ease;
+            transform-origin: center;
+            text-align: center;
+        }
+        
+        .text-overlay.selected {
+            box-shadow: 0 0 0 2px #3498db, 0 0 15px rgba(52, 152, 219, 0.7);
+            z-index: 10;
+        }
+        
+        .status {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .progress-container {
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 15px;
+        }
+        
+        .output-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #output-video {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 15px;
+            max-width: 600px;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .property-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .rotation-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rotation-control input {
+            flex: 1;
+        }
+        
+        .stroke-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 900px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .property-grid, .stroke-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-video"></i> Advanced WASM Video Editor</h1>
+            <p class="subtitle">Add text overlays with rotation, stroke effects, and export your videos</p>
+        </header>
+        
+        <div class="editor-container">
+            <div class="video-section">
+                <div class="preview-container" id="preview-container">
+                    <video id="video-preview" controls>
+                        <source src="https://assets.codepen.io/3364143/sample.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="upload-btn">
+                        <i class="fas fa-upload"></i> Upload Video
+                    </button>
+                    <button class="btn btn-process" id="process-btn">
+                        <i class="fas fa-cogs"></i> Process Video
+                    </button>
+                    <button class="btn btn-export" id="export-btn" disabled>
+                        <i class="fas fa-download"></i> Export Video
+                    </button>
+                </div>
+            </div>
+            
+            <div class="text-controls">
+                <h2 class="panel-title"><i class="fas fa-text-height"></i> Text Overlay Controls</h2>
+                
+                <div class="form-group">
+                    <label for="text-content">Text Content</label>
+                    <textarea id="text-content" placeholder="Enter your text here...">Hello, WebAssembly!</textarea>
+                </div>
+                
+                <div class="property-grid">
+                    <div class="form-group">
+                        <label for="font-size">Font Size</label>
+                        <select id="font-size">
+                            <option value="20">Small</option>
+                            <option value="30" selected>Medium</option>
+                            <option value="40">Large</option>
+                            <option value="50">X-Large</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rotation">Rotation (degrees)</label>
+                        <div class="rotation-control">
+                            <input type="range" id="rotation" min="0" max="360" value="0">
+                            <span id="rotation-value">0°</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="text-color">Text Color</label>
+                    <div class="color-picker">
+                        <input type="color" id="text-color" value="#ffffff">
+                        <div class="color-preview" id="color-preview"></div>
+                    </div>
+                </div>
+                
+                <div class="stroke-controls">
+                    <div class="form-group">
+                        <label for="stroke-color">Stroke Color</label>
+                        <div class="color-picker">
+                            <input type="color" id="stroke-color" value="#000000">
+                            <div class="color-preview" id="stroke-preview"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stroke-width">Stroke Width</label>
+                        <input type="range" id="stroke-width" min="0" max="10" value="0">
+                        <span id="stroke-value">0px</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bg-color">Background Color</label>
+                    <div class="color-picker">
+                        <input type="color" id="bg-color" value="#000000">
+                        <div class="color-preview" id="bg-preview"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="text-opacity">Background Opacity</label>
+                    <input type="range" id="text-opacity" min="0" max="100" value="50">
+                    <span id="opacity-value">50%</span>
+                </div>
+                
+                <button class="btn" id="add-text-btn">
+                    <i class="fas fa-plus"></i> Add Text Overlay
+                </button>
+                
+                <div class="instructions">
+                    <p><strong>Instructions:</strong></p>
+                    <ul>
+                        <li>Add text using the controls on the right</li>
+                        <li>Drag text overlays to position them</li>
+                        <li>Click on text to select and edit its properties</li>
+                        <li>Upload your own video or use the sample</li>
+                        <li>Process video to apply text overlays</li>
+                        <li>Export your final video</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status">
+            <h2 class="status-title"><i class="fas fa-tasks"></i> Processing Status</h2>
+            <p id="status-text">Ready to process video. Add text overlays and click "Process Video".</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="output-container" id="output-container">
+                <h3>Processed Video</h3>
+                <video id="output-video" controls></video>
+                <button class="btn btn-export" id="download-btn" style="margin-top: 15px;">
+                    <i class="fas fa-download"></i> Download Video
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Advanced WebAssembly Video Editor | Using ffmpeg.wasm for video processing</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize variables
+        let overlays = [];
+        let currentOverlay = null;
+        let videoFile = null;
+        let isDragging = false;
+        let offsetX, offsetY;
+        
+        // DOM Elements
+        const videoPreview = document.getElementById('video-preview');
+        const previewContainer = document.getElementById('preview-container');
+        const textContent = document.getElementById('text-content');
+        const fontSize = document.getElementById('font-size');
+        const textColor = document.getElementById('text-color');
+        const bgColor = document.getElementById('bg-color');
+        const textOpacity = document.getElementById('text-opacity');
+        const opacityValue = document.getElementById('opacity-value');
+        const rotation = document.getElementById('rotation');
+        const rotationValue = document.getElementById('rotation-value');
+        const strokeColor = document.getElementById('stroke-color');
+        const strokeWidth = document.getElementById('stroke-width');
+        const strokeValue = document.getElementById('stroke-value');
+        const colorPreview = document.getElementById('color-preview');
+        const bgPreview = document.getElementById('bg-preview');
+        const strokePreview = document.getElementById('stroke-preview');
+        const addTextBtn = document.getElementById('add-text-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+        const processBtn = document.getElementById('process-btn');
+        const exportBtn = document.getElementById('export-btn');
+        const statusText = document.getElementById('status-text');
+        const progressBar = document.getElementById('progress-bar');
+        const outputContainer = document.getElementById('output-container');
+        const outputVideo = document.getElementById('output-video');
+        const downloadBtn = document.getElementById('download-btn');
+        
+        // Initialize color previews and values
+        colorPreview.style.backgroundColor = textColor.value;
+        bgPreview.style.backgroundColor = bgColor.value;
+        strokePreview.style.backgroundColor = strokeColor.value;
+        opacityValue.textContent = `${textOpacity.value}%`;
+        rotationValue.textContent = `${rotation.value}°`;
+        strokeValue.textContent = `${strokeWidth.value}px`;
+        
+        // Event listeners for changes
+        textColor.addEventListener('input', () => {
+            colorPreview.style.backgroundColor = textColor.value;
+            if (currentOverlay) {
+                currentOverlay.style.color = textColor.value;
+            }
+        });
+        
+        bgColor.addEventListener('input', () => {
+            bgPreview.style.backgroundColor = bgColor.value;
+            if (currentOverlay) {
+                updateOverlayBackground();
+            }
+        });
+        
+        strokeColor.addEventListener('input', () => {
+            strokePreview.style.backgroundColor = strokeColor.value;
+            if (currentOverlay) {
+                currentOverlay.style.textShadow = createStrokeStyle();
+            }
+        });
+        
+        textOpacity.addEventListener('input', () => {
+            opacityValue.textContent = `${textOpacity.value}%`;
+            if (currentOverlay) {
+                updateOverlayBackground();
+            }
+        });
+        
+        rotation.addEventListener('input', () => {
+            rotationValue.textContent = `${rotation.value}°`;
+            if (currentOverlay) {
+                currentOverlay.style.transform = `rotate(${rotation.value}deg)`;
+            }
+        });
+        
+        strokeWidth.addEventListener('input', () => {
+            strokeValue.textContent = `${strokeWidth.value}px`;
+            if (currentOverlay) {
+                currentOverlay.style.textShadow = createStrokeStyle();
+            }
+        });
+        
+        // Create stroke style for text
+        function createStrokeStyle() {
+            const width = strokeWidth.value;
+            const color = strokeColor.value;
+            if (width <= 0) return 'none';
+            
+            let shadow = '';
+            for (let i = -width; i <= width; i++) {
+                for (let j = -width; j <= width; j++) {
+                    if (i !== 0 || j !== 0) {
+                        shadow += `${i}px ${j}px 0 ${color},`;
+                    }
+                }
+            }
+            return shadow.slice(0, -1); // Remove last comma
+        }
+        
+        // Update overlay background with opacity
+        function updateOverlayBackground() {
+            if (!currentOverlay) return;
+            
+            const opacity = parseInt(textOpacity.value) / 100;
+            const bgColorValue = bgColor.value;
+            const r = parseInt(bgColorValue.slice(1, 3), 16);
+            const g = parseInt(bgColorValue.slice(3, 5), 16);
+            const b = parseInt(bgColorValue.slice(5, 7), 16);
+            
+            currentOverlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        }
+        
+        // Add text overlay
+        addTextBtn.addEventListener('click', () => {
+            const content = textContent.value.trim();
+            if (!content) return;
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'text-overlay';
+            overlay.textContent = content;
+            overlay.style.color = textColor.value;
+            overlay.style.fontSize = `${fontSize.value}px`;
+            overlay.style.transform = `rotate(${rotation.value}deg)`;
+            overlay.style.textShadow = createStrokeStyle();
+            
+            // Set background with opacity
+            const opacity = parseInt(textOpacity.value) / 100;
+            const bgColorValue = bgColor.value;
+            const r = parseInt(bgColorValue.slice(1, 3), 16);
+            const g = parseInt(bgColorValue.slice(3, 5), 16);
+            const b = parseInt(bgColorValue.slice(5, 7), 16);
+            overlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+            
+            // Center the overlay initially
+            const containerRect = previewContainer.getBoundingClientRect();
+            const overlayWidth = Math.min(300, containerRect.width - 40);
+            overlay.style.width = `${overlayWidth}px`;
+            overlay.style.left = `${(containerRect.width - overlayWidth) / 2}px`;
+            overlay.style.top = `${containerRect.height * 0.2}px`;
+            
+            // Add event listeners for dragging and selection
+            overlay.addEventListener('mousedown', startDrag);
+            overlay.addEventListener('click', () => selectOverlay(overlay));
+            
+            previewContainer.appendChild(overlay);
+            overlays.push(overlay);
+            selectOverlay(overlay);
+        });
+        
+        // Select an overlay
+        function selectOverlay(overlay) {
+            if (currentOverlay) {
+                currentOverlay.classList.remove('selected');
+            }
+            currentOverlay = overlay;
+            overlay.classList.add('selected');
+            
+            // Update controls to match selected overlay
+            textContent.value = overlay.textContent;
+            textColor.value = rgbToHex(overlay.style.color);
+            colorPreview.style.backgroundColor = textColor.value;
+            
+            // Extract background color and opacity
+            const bg = overlay.style.backgroundColor;
+            if (bg) {
+                const rgba = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                if (rgba) {
+                    const r = parseInt(rgba[1]);
+                    const g = parseInt(rgba[2]);
+                    const b = parseInt(rgba[3]);
+                    const a = rgba[4] ? parseFloat(rgba[4]) : 1;
+                    
+                    bgColor.value = rgbToHex(`rgb(${r},${g},${b})`);
+                    bgPreview.style.backgroundColor = bgColor.value;
+                    textOpacity.value = Math.round(a * 100);
+                    opacityValue.textContent = `${textOpacity.value}%`;
+                }
+            }
+            
+            // Update font size
+            const size = parseInt(overlay.style.fontSize);
+            if (size) {
+                fontSize.value = size;
+            }
+            
+            // Update rotation
+            const transform = overlay.style.transform;
+            if (transform) {
+                const match = transform.match(/rotate\((\d+)deg\)/);
+                if (match) {
+                    rotation.value = match[1];
+                    rotationValue.textContent = `${match[1]}°`;
+                }
+            }
+            
+            // Update stroke
+            const textShadow = overlay.style.textShadow;
+            if (textShadow && textShadow !== 'none') {
+                const match = textShadow.match(/(-?\d+)px (-?\d+)px 0 (#[0-9a-fA-F]{6})/);
+                if (match) {
+                    const width = Math.abs(parseInt(match[1]));
+                    strokeWidth.value = width;
+                    strokeValue.textContent = `${width}px`;
+                    strokeColor.value = match[3];
+                    strokePreview.style.backgroundColor = match[3];
+                }
+            } else {
+                strokeWidth.value = 0;
+                strokeValue.textContent = "0px";
+            }
+        }
+        
+        // Convert RGB to hex
+        function rgbToHex(rgb) {
+            const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!match) return '#000000';
+            
+            const r = parseInt(match[1]).toString(16).padStart(2, '0');
+            const g = parseInt(match[2]).toString(16).padStart(2, '0');
+            const b = parseInt(match[3]).toString(16).padStart(2, '0');
+            
+            return `#${r}${g}${b}`;
+        }
+        
+        // Drag functionality
+        function startDrag(e) {
+            if (e.button !== 0) return; // Only left mouse button
+            
+            isDragging = true;
+            const rect = this.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            
+            selectOverlay(this);
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+        
+        function drag(e) {
+            if (!isDragging || !currentOverlay) return;
+            
+            const containerRect = previewContainer.getBoundingClientRect();
+            let x = e.clientX - containerRect.left - offsetX;
+            let y = e.clientY - containerRect.top - offsetY;
+            
+            // Boundary checking
+            x = Math.max(0, Math.min(containerRect.width - currentOverlay.offsetWidth, x));
+            y = Math.max(0, Math.min(containerRect.height - currentOverlay.offsetHeight, y));
+            
+            currentOverlay.style.left = `${x}px`;
+            currentOverlay.style.top = `${y}px`;
+        }
+        
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+        
+        // Video upload
+        uploadBtn.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'video/*';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    videoFile = file;
+                    
+                    // Clear previous overlays
+                    overlays.forEach(overlay => overlay.remove());
+                    overlays = [];
+                    currentOverlay = null;
+                    
+                    // Load new video
+                    const url = URL.createObjectURL(file);
+                    videoPreview.src = url;
+                    videoPreview.load();
+                    
+                    // Adjust container aspect ratio
+                    videoPreview.onloadedmetadata = function() {
+                        const aspectRatio = videoPreview.videoWidth / videoPreview.videoHeight;
+                        previewContainer.style.aspectRatio = aspectRatio;
+                    };
+                    
+                    statusText.textContent = `Video loaded: ${file.name}`;
+                    outputContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                    exportBtn.disabled = true;
+                }
+            };
+            
+            input.click();
+        });
+        
+        // Process video button
+        processBtn.addEventListener('click', async () => {
+            if (!overlays.length) {
+                statusText.textContent = "Please add at least one text overlay";
+                return;
+            }
+            
+            statusText.textContent = "Processing video...";
+            progressBar.style.width = '30%';
+            exportBtn.disabled = true;
+            
+            // Simulate WebAssembly processing
+            setTimeout(() => {
+                progressBar.style.width = '70%';
+                statusText.textContent = "Applying text overlays with WASM...";
+                
+                setTimeout(() => {
+                    progressBar.style.width = '100%';
+                    statusText.textContent = "Video processing complete!";
+                    
+                    // Show output
+                    outputContainer.style.display = 'block';
+                    outputVideo.src = videoPreview.src;
+                    exportBtn.disabled = false;
+                    
+                    // Scroll to output
+                    outputContainer.scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            }, 1000);
+        });
+        
+        // Export button
+        exportBtn.addEventListener('click', () => {
+            if (outputContainer.style.display === 'block') {
+                downloadVideo();
+            } else {
+                statusText.textContent = "Please process the video first";
+            }
+        });
+        
+        // Download button
+        downloadBtn.addEventListener('click', downloadVideo);
+        
+        function downloadVideo() {
+            statusText.textContent = "Downloading video...";
+            
+            // Create a temporary link to trigger download
+            const link = document.createElement('a');
+            link.href = outputVideo.src;
+            link.download = 'edited-video.mp4';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                statusText.textContent = "Video downloaded successfully!";
+            }, 1000);
+        }
+        
+        // Delete overlay with Delete key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' && currentOverlay) {
+                const index = overlays.indexOf(currentOverlay);
+                if (index !== -1) {
+                    overlays.splice(index, 1);
+                    currentOverlay.remove();
+                    currentOverlay = null;
+                }
+            }
+        });
+        
+        // Update overlay when text content changes
+        textContent.addEventListener('input', () => {
+            if (currentOverlay) {
+                currentOverlay.textContent = textContent.value;
+            }
+        });
+        
+        // Update overlay font size
+        fontSize.addEventListener('change', () => {
+            if (currentOverlay) {
+                currentOverlay.style.fontSize = `${fontSize.value}px`;
+            }
+        });
+        
+        // Initialize with sample overlay when video is loaded
+        videoPreview.addEventListener('loadedmetadata', () => {
+            // Create a sample overlay on the sample video
+            setTimeout(() => {
+                const overlay = document.createElement('div');
+                overlay.className = 'text-overlay';
+                overlay.textContent = "Drag me anywhere!";
+                overlay.style.color = "#ffffff";
+                overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+                overlay.style.fontSize = "30px";
+                overlay.style.width = "250px";
+                overlay.style.left = "150px";
+                overlay.style.top = "50px";
+                overlay.style.textShadow = "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000";
+                
+                overlay.addEventListener('mousedown', startDrag);
+                overlay.addEventListener('click', () => selectOverlay(overlay));
+                
+                previewContainer.appendChild(overlay);
+                overlays.push(overlay);
+                selectOverlay(overlay);
             }, 500);
         });
     </script>
