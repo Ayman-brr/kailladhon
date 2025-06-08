@@ -3,9 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Young black nd rich</title>
+    <title>Young Black nd Rich</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .editor {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .editor {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .video-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            aspect-ratio: 16/9;
+        }
+        
+        video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background: #4a4a6a;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #5a5a7a;
+        }
+        
+        .btn.primary {
+            background: #2a9d8f;
+        }
+        
+        .btn.primary:hover {
+            background: #3aad9f;
+        }
+        
+        .btn.success {
+            background: #e63946;
+        }
+        
+        .btn.success:hover {
+            background: #f64956;
+        }
+        
+        .controls-panel {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .controls-panel h2 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: white;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .text-overlay {
+            position: absolute;
+            padding: 0.5rem;
+            cursor: move;
+            user-select: none;
+            border-radius: 4px;
+            max-width: 300px;
+            word-break: break-word;
+        }
+        
+        .status {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .progress-container {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #2a9d8f;
+            transition: width 0.3s;
+        }
+        
+        .output-container {
+            margin-top: 1rem;
+        }
+        
+        .output-container video {
+            border-radius: 4px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            opacity: 0.7;
+        }
+        
+        /* Debugging styles */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -86,6 +290,258 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <div class="debug-info" id="debug-info"></div>
+
+    <script>
+        // DOM Elements
+        const video = document.getElementById('video');
+        const videoWrapper = document.querySelector('.video-wrapper');
+        const textContent = document.getElementById('text-content');
+        const fontSize = document.getElementById('font-size');
+        const textColor = document.getElementById('text-color');
+        const bgColor = document.getElementById('bg-color');
+        const opacity = document.getElementById('opacity');
+        const opacityValue = document.getElementById('opacity-value');
+        const addTextBtn = document.getElementById('add-text');
+        const uploadBtn = document.getElementById('upload');
+        const processBtn = document.getElementById('process');
+        const exportBtn = document.getElementById('export');
+        const status = document.getElementById('status');
+        const progressBar = document.getElementById('progress-bar');
+        const outputContainer = document.getElementById('output');
+        const outputVideo = document.getElementById('output-video');
+        const debugInfo = document.getElementById('debug-info');
+
+        // State
+        let overlays = [];
+        let currentOverlay = null;
+        let videoFile = null;
+
+        // Initialize
+        opacityValue.textContent = `${opacity.value}%`;
+
+        // Event Listeners
+        addTextBtn.addEventListener('click', addTextOverlay);
+        uploadBtn.addEventListener('click', uploadVideo);
+        processBtn.addEventListener('click', processVideo);
+        exportBtn.addEventListener('click', exportVideo);
+        opacity.addEventListener('input', updateOpacityValue);
+
+        // Functions
+        function addTextOverlay() {
+            const text = textContent.value.trim();
+            if (!text) return;
+
+            const overlay = document.createElement('div');
+            overlay.className = 'text-overlay';
+            overlay.textContent = text;
+            overlay.style.fontSize = `${fontSize.value}px`;
+            overlay.style.color = textColor.value;
+            overlay.style.backgroundColor = `rgba(${hexToRgb(bgColor.value)}, ${opacity.value / 100})`;
+            
+            // Center overlay initially
+            const rect = videoWrapper.getBoundingClientRect();
+            overlay.style.left = `${rect.width / 2 - 100}px`;
+            overlay.style.top = `${rect.height / 2 - 50}px`;
+            
+            // Add drag functionality
+            overlay.addEventListener('mousedown', startDrag);
+            overlay.addEventListener('click', () => selectOverlay(overlay));
+            
+            videoWrapper.appendChild(overlay);
+            overlays.push(overlay);
+            selectOverlay(overlay);
+        }
+
+        function selectOverlay(overlay) {
+            if (currentOverlay) {
+                currentOverlay.style.border = 'none';
+            }
+            currentOverlay = overlay;
+            overlay.style.border = '2px dashed #2a9d8f';
+            
+            // Update controls
+            textContent.value = overlay.textContent;
+            textColor.value = rgbToHex(overlay.style.color);
+            fontSize.value = parseInt(overlay.style.fontSize);
+            
+            const bg = overlay.style.backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/);
+            if (bg) {
+                bgColor.value = rgbToHex(`rgb(${bg[1]},${bg[2]},${bg[3]}`);
+                opacity.value = Math.round(bg[4] * 100);
+                opacityValue.textContent = `${opacity.value}%`;
+            }
+        }
+
+        function startDrag(e) {
+            e.preventDefault();
+            const overlay = e.target;
+            const rect = overlay.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+            
+            function move(e) {
+                const videoRect = videoWrapper.getBoundingClientRect();
+                let x = e.clientX - videoRect.left - offsetX;
+                let y = e.clientY - videoRect.top - offsetY;
+                
+                // Boundary check
+                x = Math.max(0, Math.min(videoRect.width - rect.width, x));
+                y = Math.max(0, Math.min(videoRect.height - rect.height, y));
+                
+                overlay.style.left = `${x}px`;
+                overlay.style.top = `${y}px`;
+            }
+            
+            function stop() {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', stop);
+            }
+            
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', stop);
+        }
+
+        function uploadVideo() {
+            // Create file input
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'video/*';
+            input.style.display = 'none';
+            
+            // Append to body (required for some browsers)
+            document.body.appendChild(input);
+            
+            // Trigger click
+            input.click();
+            
+            // Handle file selection
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check if it's a video file
+                    if (!file.type.startsWith('video/')) {
+                        status.textContent = 'Please select a video file';
+                        // Clean up
+                        document.body.removeChild(input);
+                        return;
+                    }
+                    
+                    videoFile = file;
+                    
+                    // Clear existing overlays
+                    overlays.forEach(overlay => overlay.remove());
+                    overlays = [];
+                    currentOverlay = null;
+                    
+                    // Create object URL and set as video source
+                    const videoURL = URL.createObjectURL(file);
+                    video.src = videoURL;
+                    video.load(); // Important to trigger loading
+                    
+                    // Reset output and UI
+                    outputContainer.hidden = true;
+                    exportBtn.disabled = true;
+                    status.textContent = `Loaded: ${file.name}`;
+                    progressBar.style.width = '0%';
+                    
+                    // When video metadata is loaded, initialize a sample overlay
+                    video.onloadedmetadata = function() {
+                        setTimeout(() => {
+                            textContent.value = "Your Text Here";
+                            addTextOverlay();
+                        }, 500);
+                    };
+                    
+                    // Handle video loading errors
+                    video.onerror = function() {
+                        status.textContent = "Error loading video";
+                        URL.revokeObjectURL(videoURL);
+                    };
+                }
+                
+                // Clean up the input
+                document.body.removeChild(input);
+            };
+            
+            // Also handle when the user cancels
+            input.oncancel = function() {
+                document.body.removeChild(input);
+            };
+        }
+
+        function processVideo() {
+            if (!overlays.length) {
+                status.textContent = "Please add at least one text overlay";
+                return;
+            }
+            
+            status.textContent = "Processing video...";
+            progressBar.style.width = '0%';
+            exportBtn.disabled = true;
+            
+            // Simulate processing (in real app, use ffmpeg.wasm)
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        status.textContent = "Processing complete!";
+                        outputVideo.src = video.src;
+                        outputContainer.hidden = false;
+                        exportBtn.disabled = false;
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        function exportVideo() {
+            const link = document.createElement('a');
+            link.href = outputVideo.src;
+            link.download = 'edited-video.mp4';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            status.textContent = "Video downloaded!";
+        }
+
+        function updateOpacityValue() {
+            opacityValue.textContent = `${opacity.value}%`;
+            if (currentOverlay) {
+                const rgb = hexToRgb(bgColor.value);
+                currentOverlay.style.backgroundColor = `rgba(${rgb}, ${opacity.value / 100})`;
+            }
+        }
+
+        // Helper functions
+        function hexToRgb(hex) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `${r}, ${g}, ${b}`;
+        }
+
+        function rgbToHex(rgb) {
+            const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!match) return '#000000';
+            
+            const r = parseInt(match[1]).toString(16).padStart(2, '0');
+            const g = parseInt(match[2]).toString(16).padStart(2, '0');
+            const b = parseInt(match[3]).toString(16).padStart(2, '0');
+            
+            return `#${r}${g}${b}`;
+        }
+
+        // Initialize with sample overlay when video loads
+        video.addEventListener('loadedmetadata', () => {
+            setTimeout(() => {
+                textContent.value = "Sample Text";
+                addTextOverlay();
+            }, 500);
+        });
+    </script>
 </body>
 </html>
